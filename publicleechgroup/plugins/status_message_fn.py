@@ -82,7 +82,7 @@ async def status_message_f(client, message):
         msg += "\n\n"
     LOGGER.info(msg)
 
-    if msg == "":
+    if not msg:
         msg = Loilacaztion.NO_TOR_STATUS
 
     currentTime = time_formatter((time.time() - BOT_START_TIME))
@@ -154,8 +154,7 @@ async def exec_message_f(client, message):
     if not o:
         o = "😐"
     return_code = process.returncode
-    OUTPUT = ""
-    OUTPUT += "<b>EXEC</b>:\n"
+    OUTPUT = "" + "<b>EXEC</b>:\n"
     OUTPUT += "<u>Command</u>\n"
     OUTPUT += f"<code>{cmd}</code>\n"
     OUTPUT += f"<u>PID</u>: <code>{process.pid}</code>\n\n"
@@ -272,7 +271,10 @@ async def eval_message_f(client, message):
 
 async def aexec(code, client, message):
     exec(
-        f'async def __aexec(client, message): ' +
-        ''.join(f'\n {l}' for l in code.split('\n'))
+        (
+            'async def __aexec(client, message): '
+            + ''.join(f'\n {l}' for l in code.split('\n'))
+        )
     )
+
     return await locals()['__aexec'](client, message)
